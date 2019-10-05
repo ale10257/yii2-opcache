@@ -16,6 +16,7 @@ $this->title = $version;
 
 <div class="panel panel-info">
     <div class="panel-heading">
+        <h4><?= \ale10257\opcache\utils\Helper::getTitlePage() ?></h4>
         <div class="panel-title"><?= $version ?></div>
     </div>
     <div class="panel-body">

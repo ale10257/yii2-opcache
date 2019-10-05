@@ -30,6 +30,9 @@ class OpcacheFinder implements IOpcacheFinder, \JsonSerializable
     {
         try {
             $config = opcache_get_configuration();
+            if ($config['directives']['opcache.enable'] != 1) {
+                throw new \DomainException('Opcache Extension Disabled!');
+            }
             $this->directives = Helper::remove($config, 'directives', []);
             $this->blackList = Helper::remove($config, 'blacklist', []);
             $this->version = Helper::getValue($config, 'version.opcache_product_name', '')
