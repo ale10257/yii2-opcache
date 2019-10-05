@@ -5,18 +5,18 @@ Yii2 OpCache module
 Installation
 ------------
 
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/)
 
 Either run
 
 ```
-php composer.phar require --prefer-dist insolita/yii2-opcache "~1.0"
+php composer require ale10257/opcache "dev-master"
 ```
 
 or add
 
 ```
-"insolita/yii2-opcache": "~1.0"
+ale10257/opcache "dev-master"
 ```
 
 to the require section of your `composer.json` file.
@@ -27,26 +27,11 @@ Usage
 
 Once the extension is installed, simply use it in your code by  :
 ```php
-'bootstrap'=>[
-       ...
-        \insolita\opcache\Bootstrap::class
-        ...
-],
 ...
 'modules'=>[
     ...
     'opcache'=>[
-            'class'=>'insolita\opcache\OpcacheModule',
-            'as access'=>[
-               'class' => \yii\filters\AccessControl::class,
-                           'rules' => [
-                               [
-                                   'allow' => true,
-                                   //Protect access
-                                   'roles' => ['developer'],
-                               ],
-                           ],
-            ]
+            'class'=>'ale10257\opcache\OpcacheModule',
         ],
     ...    
 ]
@@ -54,23 +39,6 @@ Once the extension is installed, simply use it in your code by  :
 ```
 Go to route ```['/opcache/default/index']```
 
-
-Also for console command usage - add in console configuration
-
-```php
-'bootstrap'=>[
-       ...
-        \insolita\opcache\Bootstrap::class
-        ...
-],
-...
-'controllerMap'=>[
-    'opcache'=>[
-        'class'=>\insolita\opcache\commands\OpcacheController::class
-    ]
-]
-```
-commands opcache/status opcache/config opcache/files opcache/reset opcache/invalidate will be available
 
 Screens
 -------
