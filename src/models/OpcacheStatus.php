@@ -1,72 +1,58 @@
 <?php
-/**
- * Created by solly [05.04.17 19:33]
- */
 
-namespace insolita\opcache\models;
+namespace ale10257\opcache\models;
 
-use insolita\opcache\utils\Helper;
+use ale10257\opcache\utils\Helper;
 
 /**
  * Class OpcacheStatus
  *
  * @package insolita\opcache\models
  */
-class OpcacheStatus
+class OpcacheStatus implements \JsonSerializable
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $opcacheEnabled = false;
-    
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $cacheFull = false;
-    
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $restartPending = false;
-    
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $restartInProgress = false;
-    
-    /**
-     * @var array
-     */
+    /** @var array */
     private $memoryUsage = [];
-    
-    /**
-     * @var array
-     */
+    /** @var array */
     private $statistics = [];
-    
-    /**
-     * @var array
-     */
+    /**@var array */
     private $stringsInfo = [];
-    
+
     /**
      * OpcacheStatus constructor.
-     *
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct($config = [])
     {
-        $this->memoryUsage = Helper::remove($config, 'memory_usage');
-        $this->statistics = Helper::remove($config, 'opcache_statistics');
-        $this->stringsInfo = Helper::remove($config, 'interned_strings_usage');
-        foreach ($config as $name => $value) {
-            $name = Helper::variablize($name);
-            if (isset($this->{$name})) {
-                $this->{$name} = $value;
+        if ($config) {
+            $this->memoryUsage = Helper::remove($config, 'memory_usage');
+            $this->statistics = Helper::remove($config, 'opcache_statistics');
+            $this->stringsInfo = Helper::remove($config, 'interned_strings_usage');
+            foreach ($config as $name => $value) {
+                $name = Helper::variablize($name);
+                if (isset($this->{$name})) {
+                    $this->{$name} = $value;
+                }
             }
         }
     }
-    
+
+    public function setData(array $config)
+    {
+        foreach ($config as $key => $item) {
+            $this->$key = $item;
+        }
+        return $this;
+    }
+
     /**
      * @return bool
      */
@@ -74,7 +60,7 @@ class OpcacheStatus
     {
         return $this->opcacheEnabled;
     }
-    
+
     /**
      * @return bool
      */
@@ -82,7 +68,7 @@ class OpcacheStatus
     {
         return $this->cacheFull;
     }
-    
+
     /**
      * @return bool
      */
@@ -90,7 +76,7 @@ class OpcacheStatus
     {
         return $this->restartPending;
     }
-    
+
     /**
      * @return bool
      */
@@ -98,7 +84,7 @@ class OpcacheStatus
     {
         return $this->restartInProgress;
     }
-    
+
     /**
      * @return array
      */
@@ -106,7 +92,7 @@ class OpcacheStatus
     {
         return $this->memoryUsage;
     }
-    
+
     /**
      * @return array
      */
@@ -114,7 +100,7 @@ class OpcacheStatus
     {
         return $this->statistics;
     }
-    
+
     /**
      * @return array
      */
@@ -122,5 +108,24 @@ class OpcacheStatus
     {
         return $this->stringsInfo;
     }
-    
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'opcacheEnabled' => $this->opcacheEnabled,
+            'cacheFull' => $this->cacheFull,
+            'restartPending' => $this->restartPending,
+            'restartInProgress' => $this->restartInProgress,
+            'memoryUsage' => $this->memoryUsage,
+            'statistics' => $this->statistics,
+            'stringsInfo' => $this->stringsInfo,
+        ];
+    }
 }

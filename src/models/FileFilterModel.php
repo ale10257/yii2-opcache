@@ -1,44 +1,32 @@
 <?php
-/**
- * Created by solly [05.04.17 19:55]
- */
 
-namespace insolita\opcache\models;
+namespace ale10257\opcache\models;
 
-use insolita\opcache\contracts\IFileFilterModel;
-use insolita\opcache\utils\Translator;
+use ale10257\opcache\utils\Translator;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
 
 /**
  * Class FileFilterModel
- *
  * @package insolita\opcache\models
  */
-class FileFilterModel extends Model implements IFileFilterModel
+class FileFilterModel extends Model
 {
-    /**
-     * @var
-     */
+    /** @var string */
     public $full_path;
-    
-    /**
-     * @var
-     */
+    /**  @var array */
     private $files;
-    
+
     /**
      * FileFilterModel constructor.
-     *
      * @param array $files
-     * @param array $config
      */
-    public function __construct(array &$files, array $config = [])
+    public function __construct(array $files = null)
     {
         $this->files = $files;
-        parent::__construct($config);
+        parent::__construct();
     }
-    
+
     /**
      * @return array
      */
@@ -49,7 +37,7 @@ class FileFilterModel extends Model implements IFileFilterModel
             [['full_path'], 'string', 'max' => 100],
         ];
     }
-    
+
     /**
      * @return array
      */
@@ -59,19 +47,39 @@ class FileFilterModel extends Model implements IFileFilterModel
             'full_path' => Translator::t('full_path'),
         ];
     }
-    
+
     /**
      * @param $params
-     *
      * @return \yii\data\ArrayDataProvider
      */
-    public function search(array $params = [])
+    public function search($params)
     {
-        $provider = new ArrayDataProvider(
+        $provider = $this->setProvider($this->files);
+        if ($this->load($params) && $this->validate() && !empty($this->full_path)) {
+            $provider->allModels = array_filter($this->files, [$this, 'pathFilter']);
+        }
+        return $provider;
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    protected function pathFilter($item)
+    {
+        if (mb_strpos($item['full_path'], $this->full_path) !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    public function setProvider($all_models = [])
+    {
+        return new ArrayDataProvider(
             [
-                'allModels' => $this->files,
+                'allModels' => $all_models,
                 'key' => 'full_path',
-                'pagination' => ['pageSize' => 100],
+                'pagination' => ['pageSize' => 20],
                 'sort' => [
                     'attributes' => [
                         'full_path' => [],
@@ -84,53 +92,5 @@ class FileFilterModel extends Model implements IFileFilterModel
                 ],
             ]
         );
-        if ($this->load($params) && $this->validate() && !empty($this->full_path)) {
-            $provider = new ArrayDataProvider(
-                [
-                    'allModels' => array_filter($this->files, [$this, 'pathFilter']),
-                    'key' => 'full_path',
-                    'pagination' => ['pageSize' => 100],
-                    'sort' => [
-                        'attributes' => [
-                            'full_path' => [],
-                            'timestamp' => [],
-                            'hits' => [],
-                            'memory_consumption' => [],
-                            'last_used_timestamp' => [],
-                        ],
-                        'defaultOrder' => ['full_path' => SORT_ASC],
-                    ],
-                ]
-            );
-        }
-        return $provider;
-    }
-    
-    /**
-     * @param $params
-     *
-     * @return array
-     */
-    public function filterFiles(array $params = [])
-    {
-        if ($this->load($params) && $this->validate() && !empty($this->full_path)) {
-            return array_filter($this->files, [$this, 'pathFilter']);
-        } else {
-            return [];
-        }
-    }
-    
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    protected function pathFilter($item)
-    {
-        if (mb_strpos($item['full_path'], $this->full_path) !== false) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

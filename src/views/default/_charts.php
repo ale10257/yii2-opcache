@@ -1,28 +1,30 @@
 <?php
-use insolita\opcache\utils\Translator;
-/**
- * @var \insolita\opcache\models\OpcacheStatus $status
-**/
 
- echo insolita\opcache\widgets\PieWidget::widget(
+use ale10257\opcache\utils\Translator;
+
+/**
+ * @var ale10257\opcache\models\OpcacheStatus $status
+ **/
+
+echo ale10257\opcache\widgets\PieWidget::widget(
     [
-        'functionName'  => 'drawMemoryChart',
-        'options'       => ['style' => 'width:600px;height:400px;','id'=>'memoryChart'],
+        'functionName' => 'drawMemoryChart',
+        'options' => ['style' => 'width:600px;height:400px;', 'id' => 'memoryChart'],
         'clientOptions' => [
-            'title'   => Translator::t('memory_usage')."\n"
-                . Translator::status('current_wasted_percentage').' = '
-                .round($status->getMemoryUsage()['current_wasted_percentage'],2).'%',
+            'title' => Translator::t('memory_usage') . "\n"
+                . Translator::status('current_wasted_percentage') . ' = '
+                . round($status->getMemoryUsage()['current_wasted_percentage'], 2) . '%',
             'tooltip' => ['text' => 'percentage'],
-            'legend'  => ['position' => 'right'],
-            'slices'  => [
-                0=>['color'=>'red'],
-                1=>['color'=>'green'],
-                2 => ['offset' => 0.3,'color'=>'yellow'],
+            'legend' => ['position' => 'right'],
+            'slices' => [
+                0 => ['color' => 'red'],
+                1 => ['color' => 'green'],
+                2 => ['offset' => 0.3, 'color' => 'yellow'],
             ],
-            'pieHole'=> 0.3,
+            'pieHole' => 0.3,
         ],
-        'data'          => [
-            ['label'=>'Memory','value'=>'Usage'],
+        'data' => [
+            ['label' => 'Memory', 'value' => 'Usage'],
             [
                 'label' => Translator::status('used_memory')
                     . ' - ' . Yii::$app->formatter->asShortSize(
@@ -47,24 +49,24 @@ use insolita\opcache\utils\Translator;
         ],
     ]
 );
-echo insolita\opcache\widgets\PieWidget::widget(
+echo ale10257\opcache\widgets\PieWidget::widget(
     [
-        'functionName'  => 'drawBufferChart',
-        'options'       => ['style' => 'width:600px;height:400px;','id'=>'bufferChart'],
+        'functionName' => 'drawBufferChart',
+        'options' => ['style' => 'width:600px;height:400px;', 'id' => 'bufferChart'],
         'clientOptions' => [
-            'title'   => Translator::status('buffer_size')
-                .' - '.Yii::$app->formatter->asShortSize($status->getStringsInfo()['buffer_size']),
+            'title' => Translator::status('buffer_size')
+                . ' - ' . Yii::$app->formatter->asShortSize($status->getStringsInfo()['buffer_size']),
             'tooltip' => ['text' => 'percentage'],
-            'legend'  => ['position' => 'right'],
-            'slices'  => [
-                0=>['color'=>'red'],
-                1=>['color'=>'blue']
+            'legend' => ['position' => 'right'],
+            'slices' => [
+                0 => ['color' => 'red'],
+                1 => ['color' => 'blue']
             ],
-            'pieHole'=> 0.4,
+            'pieHole' => 0.4,
         ],
-        'data'          => [
-            ['label'=>'Used','value'=>'Free'],
-            
+        'data' => [
+            ['label' => 'Used', 'value' => 'Free'],
+
             [
                 'label' => Translator::status('used_memory')
                     . ' - ' . Yii::$app->formatter->asShortSize($status->getStringsInfo()['used_memory']),
@@ -78,24 +80,24 @@ echo insolita\opcache\widgets\PieWidget::widget(
         ],
     ]
 );
-echo insolita\opcache\widgets\PieWidget::widget(
+echo ale10257\opcache\widgets\PieWidget::widget(
     [
-        'functionName'  => 'drawHitsChart',
-        'options'       => ['style' => 'width:600px;height:400px;','id'=>'hitsChart'],
+        'functionName' => 'drawHitsChart',
+        'options' => ['style' => 'width:600px;height:400px;', 'id' => 'hitsChart'],
         'clientOptions' => [
-            'title'   => Translator::t('hits_misses'),
+            'title' => Translator::t('hits_misses'),
             'tooltip' => ['text' => 'percentage'],
-            'legend'  => ['position' => 'right'],
-            'slices'  => [
-                0=>['color'=>'green'],
-                1=>['color'=>'blue'],
-                2=>['color'=>'pink']
+            'legend' => ['position' => 'right'],
+            'slices' => [
+                0 => ['color' => 'green'],
+                1 => ['color' => 'blue'],
+                2 => ['color' => 'pink']
             ],
-            'pieHole'=> 0.4,
+            'pieHole' => 0.4,
         ],
-        'data'          => [
-            ['label'=>'Hits','value'=>'Misses'],
-            
+        'data' => [
+            ['label' => 'Hits', 'value' => 'Misses'],
+
             [
                 'label' => Translator::status('hits')
                     . ' - ' . $status->getStatistics()['hits'],
@@ -109,7 +111,7 @@ echo insolita\opcache\widgets\PieWidget::widget(
             [
                 'label' => Translator::status('blacklist_misses')
                     . ' - ' . $status->getStatistics()['blacklist_misses'],
-                'value' =>  $status->getStatistics()['blacklist_misses'],
+                'value' => $status->getStatistics()['blacklist_misses'],
             ],
         ],
     ]

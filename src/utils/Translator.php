@@ -3,7 +3,7 @@
  * Created by solly [05.04.17 17:58]
  */
 
-namespace insolita\opcache\utils;
+namespace ale10257\opcache\utils;
 
 /**
  * Class Translator
@@ -15,7 +15,7 @@ class Translator
     /**
      * @param       $message
      * @param array $params
-     * @param null  $language
+     * @param null $language
      *
      * @return string
      */
@@ -23,10 +23,11 @@ class Translator
     {
         return \Yii::t('opcache/hint', $message, $params, $language);
     }
+
     /**
      * @param       $message
      * @param array $params
-     * @param null  $language
+     * @param null $language
      *
      * @return string
      */
@@ -34,10 +35,11 @@ class Translator
     {
         return \Yii::t('opcache/status', $message, $params, $language);
     }
+
     /**
      * @param       $message
      * @param array $params
-     * @param null  $language
+     * @param null $language
      *
      * @return string
      */

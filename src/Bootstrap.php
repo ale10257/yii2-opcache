@@ -1,31 +1,31 @@
 <?php
-/**
- * Created by solly [06.04.17 3:27]
- */
 
-namespace insolita\opcache;
+namespace ale10257\opcache;
 
-use insolita\opcache\contracts\IOpcacheFinder;
-use insolita\opcache\contracts\IOpcachePresenter;
-use insolita\opcache\services\OpcacheFinder;
-use insolita\opcache\services\OpcachePresenter;
+use ale10257\opcache\contracts\IOpcacheFinder;
+use ale10257\opcache\services\OpcacheFinder;
+use ale10257\opcache\services\OpcacheFinderApi;
+use yii\base\Application;
 use yii\base\BootstrapInterface;
+use Yii;
 
-/**
- * Class Bootstrap
- *
- * @package backend\modules\opcache
- */
 class Bootstrap implements BootstrapInterface
 {
     /**
      * Bootstrap method to be called during application bootstrap stage.
-     *
-     * @param \yii\web\Application $app the application currently running
+     * @param Application $app the application currently running
      */
     public function bootstrap($app)
     {
-        \Yii::$container->set(IOpcachePresenter::class, OpcachePresenter::class);
-        \Yii::$container->set(IOpcacheFinder::class, OpcacheFinder::class);
+        $container = Yii::$container;
+        $host = $app->request->get('opcache_host');
+        $opcache_module = $app->getModule('opcache');
+        $container->set(IOpcacheFinder::class, function () use ($host, $opcache_module) {
+            if (!$opcache_module->local) {
+                return new OpcacheFinder();
+            } else {
+                return $host && $opcache_module->local ? new OpcacheFinderApi() : new OpcacheFinder();
+            }
+        });
     }
 }

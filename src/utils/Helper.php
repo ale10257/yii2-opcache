@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by solly [05.04.17 19:17]
- */
 
-namespace insolita\opcache\utils;
-
+namespace ale10257\opcache\utils;
 
 /**
  * Class Helper
@@ -25,7 +21,7 @@ class Helper
         if ($key instanceof \Closure) {
             return $key($array, $default);
         }
-        
+
         if (is_array($key)) {
             $lastKey = array_pop($key);
             foreach ($key as $keyPart) {
@@ -33,16 +29,16 @@ class Helper
             }
             $key = $lastKey;
         }
-        
+
         if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             return $array[$key];
         }
-        
+
         if (($pos = strrpos($key, '.')) !== false) {
             $array = static::getValue($array, substr($key, 0, $pos), $default);
             $key = substr($key, $pos + 1);
         }
-        
+
         if (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
@@ -53,7 +49,7 @@ class Helper
             return $default;
         }
     }
-    
+
     /**
      * @param      $array
      * @param      $key
@@ -66,13 +62,13 @@ class Helper
         if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             $value = $array[$key];
             unset($array[$key]);
-            
+
             return $value;
         }
-        
+
         return $default;
     }
-    
+
     /**
      * Converts a word like "send_email" to "sendEmail".
      *
@@ -87,7 +83,7 @@ class Helper
             '',
             ucwords(preg_replace('/[^A-Za-z0-9]+/', ' ', $word))
         );
-        
+
         return strtolower($word[0]) . substr($word, 1);
     }
 }

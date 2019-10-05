@@ -3,7 +3,7 @@
  * Created by solly [05.04.17 17:57]
  */
 
-namespace insolita\opcache\utils;
+namespace ale10257\opcache\utils;
 
 use yii\base\Exception;
 
@@ -14,5 +14,5 @@ use yii\base\Exception;
  */
 class OpcacheException extends Exception
 {
-    
+
 }

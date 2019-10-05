@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by solly [05.04.17 15:05]
- */
 
-namespace insolita\opcache\controllers;
+namespace ale10257\opcache\controllers;
 
-use insolita\opcache\contracts\IOpcacheFinder;
-use insolita\opcache\contracts\IOpcachePresenter;
-use insolita\opcache\utils\Translator;
-use yii\base\Module;
+use ale10257\opcache\contracts\IOpcacheController;
+use ale10257\opcache\utils\Translator;
 use yii\helpers\Html;
 use yii\web\Controller;
 
@@ -17,98 +12,56 @@ use yii\web\Controller;
  *
  * @package backend\modules\opcache\controllers
  */
-class DefaultController extends Controller
+class DefaultController extends Controller implements IOpcacheController
 {
-    
-    /**
-     * @var IOpcachePresenter
-     */
-    protected $presenter;
-    
-    /**
-     * @var IOpcacheFinder
-     */
-    protected $finder;
-    
-    public function __construct(
-        $id,
-        Module $module,
-        IOpcacheFinder $finder,
-        IOpcachePresenter $presenter,
-        array $config = []
-    ) {
-        $this->presenter = $presenter;
-        $this->presenter->setUpFormat();
-        $this->finder = $finder;
-        parent::__construct($id, $module, $config);
+    /** @var OpcacheFactory */
+    private $factory;
+
+    public function __construct($id, $module, OpcacheFactory $factory)
+    {
+        parent::__construct($id, $module);
+        $this->factory = $factory;
     }
-    
-    /**
-     * @return string
-     */
+
     public function actionIndex()
     {
-        $version = $this->finder->getVersion();
-        $status = $this->finder->getStatus();
-        $presenter = $this->presenter;
-        return $this->render('index', compact('version', 'status', 'presenter'));
+        return $this->render('index', $this->factory->createData('index'));
     }
-    
+
     /**
      * @return string
      */
     public function actionConfig()
     {
-        $version = $this->finder->getVersion();
-        $directives = $this->finder->getDirectives();
-        $directives = $this->presenter->configDirectivesProvider($directives);
-        return $this->render('config', compact('version', 'directives'));
+        return $this->render('config', $this->factory->createData('config'));
     }
-    
-    /**
-     * @return string
-     */
+
     public function actionFiles()
     {
-        $version = $this->finder->getVersion();
-        $files = $this->finder->getFiles();
-        $searchModel = $this->presenter->createFileFilterModel($files);
-        $provider = $searchModel->search(\Yii::$app->request->getQueryParams());
-        return $this->render('files', compact('version', 'searchModel', 'provider'));
+        return $this->render('files', $this->factory->createData('files'));
     }
-    
-    /**
-     * @return \yii\web\Response
-     */
+
     public function actionReset()
     {
-        if (opcache_reset()) {
+        $reset = $this->factory->createData('reset');
+        if ($reset['result']) {
             \Yii::$app->session->setFlash('success', Translator::t('cache_reset_success'));
         } else {
             \Yii::$app->session->setFlash('error', Translator::t('cache_reset_fail'));
         }
-        return $this->redirect(\Yii::$app->request->getReferrer());
+        return $this->redirect(\Yii::$app->request->referrer);
     }
-    
-    /**
-     * @return string
-     */
+
     public function actionBlack()
     {
-        $blackList = $this->finder->getBlackList();
-        $version = $this->finder->getVersion();
-        $blackFile = $this->finder->getDirectives()['opcache.blacklist_filename'];
-        return $this->render('blacklist', compact('blackList', 'blackFile', 'version'));
+        return $this->render('blacklist', $this->factory->createData('black'));
     }
-    
-    /**
-     * @param $file
-     *
-     * @return \yii\web\Response
-     */
-    public function actionInvalidate($file)
+
+    public function actionInvalidate()
     {
-        if (opcache_invalidate($file, true)) {
+        $file = \Yii::$app->request->post('file');
+        $result = $this->factory->createData('invalidate', $file);
+        if ($result['result']) {
             \Yii::$app->session->setFlash(
                 'success',
                 Translator::t('file_invalidate_success') . ' - ' . Html::encode($file)
@@ -119,25 +72,6 @@ class DefaultController extends Controller
                 Translator::t('file_invalidate_fail') . ' - ' . Html::encode($file)
             );
         }
-        return $this->redirect(\Yii::$app->request->getReferrer());
-    }
-    
-    /**
-     * @return \yii\web\Response
-     */
-    public function actionInvalidatePartial()
-    {
-        $files = $this->finder->getFiles();
-        $model = $this->presenter->createFileFilterModel($files);
-        $files = $model->filterFiles(\Yii::$app->request->post(null, []));
-        if (!empty($files)) {
-            foreach ($files as $file) {
-                opcache_invalidate($file['full_path'], true);
-            }
-            \Yii::$app->session->setFlash('success', Translator::t('cache_reset_success'));
-        } else {
-            \Yii::$app->session->setFlash('error', Translator::t('cache_reset_fail'));
-        }
-        return $this->redirect(['files']);
+        $this->redirect(\Yii::$app->request->referrer);
     }
 }

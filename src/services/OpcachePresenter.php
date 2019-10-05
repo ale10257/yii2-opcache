@@ -1,26 +1,14 @@
 <?php
-/**
- * Created by solly [05.04.17 15:09]
- */
 
-namespace insolita\opcache\services;
+namespace ale10257\opcache\services;
 
-use insolita\opcache\contracts\IOpcachePresenter;
-use insolita\opcache\models\FileFilterModel;
-use insolita\opcache\utils\Translator;
+use ale10257\opcache\models\FileFilterModel;
+use ale10257\opcache\utils\Translator;
 use yii\data\ArrayDataProvider;
 
-/**
- * Class OpcachePresenter
- *
- * @package insolita\opcache\services
- */
-class OpcachePresenter implements IOpcachePresenter
+
+class OpcachePresenter
 {
-    
-    /**
-     *
-     */
     public function setUpFormat()
     {
         \Yii::$app->formatter->booleanFormat = [
@@ -29,13 +17,12 @@ class OpcachePresenter implements IOpcachePresenter
         ];
         \Yii::$app->formatter->sizeFormatBase = 1024;
     }
-    
+
     /**
      * @param array $directives
-     *
      * @return \yii\data\ArrayDataProvider
      */
-    public function configDirectivesProvider(array &$directives)
+    public function configDirectivesProvider(array $directives)
     {
         $data = [];
         foreach ($directives as $key => $value) {
@@ -58,22 +45,21 @@ class OpcachePresenter implements IOpcachePresenter
             ]
         );
     }
-    
+
     /**
-     * @param array $files
-     *
-     * @return \insolita\opcache\contracts\IFileFilterModel|\yii\base\Model
+     * @param array|null $files
+     * @return FileFilterModel|\yii
      */
-    public function createFileFilterModel(array &$files)
+    public function createFileFilterModel(array $files = null)
     {
         return new FileFilterModel($files);
     }
-    
+
     /**
      * @param $value
      * @param $key
-     *
      * @return string
+     * @throws \yii\base\InvalidConfigException
      */
     public function formatStatistic($value, $key)
     {
@@ -84,7 +70,7 @@ class OpcachePresenter implements IOpcachePresenter
         }
         return $value;
     }
-    
+
     /**
      * @param $value
      * @param $key
@@ -100,40 +86,37 @@ class OpcachePresenter implements IOpcachePresenter
         }
         return $value;
     }
-    
+
     /**
      * @param $value
-     *
      * @return string
      */
     public function formatBool($value)
     {
         return \Yii::$app->formatter->asBoolean($value);
     }
-    
+
     /**
      * @param $message
-     *
      * @return string
      */
     protected function translateHint($message)
     {
         return Translator::hint($message);
     }
-    
+
     /**
      * @param $value
      * @param $key
-     *
      * @return string
      */
     protected function formatValue($value, $key = null)
     {
-        
+
         if (in_array($key, ['opcache.memory_consumption'])) {
             return \Yii::$app->formatter->asShortSize($value);
         }
-        
+
         $type = gettype($value);
         switch ($type) {
             case 'boolean':

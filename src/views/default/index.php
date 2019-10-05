@@ -1,12 +1,13 @@
 <?php
-use insolita\opcache\utils\Translator;
+
+use ale10257\opcache\utils\Translator;
 
 /**
- * @var \yii\web\View                                   $this
- * @var \insolita\opcache\controllers\DefaultController $context
- * @var string                                          $version
- * @var \insolita\opcache\models\OpcacheStatus          $status
- * @var \insolita\opcache\contracts\IOpcachePresenter   $presenter
+ * @var \yii\web\View $this
+ * @var ale10257\opcache\controllers\DefaultController $context
+ * @var string $version
+ * @var ale10257\opcache\models\OpcacheStatus $status
+ * @var ale10257\opcache\services\OpcachePresenter $presenter
  **/
 $this->title = $version;
 ?>
@@ -71,7 +72,7 @@ $this->title = $version;
                             <td>
                                 <?= $presenter->formatMemory($value, $key) ?>
                             </td>
-                        
+
                         <?php endforeach; ?> </tr>
                     <tr class="info">
                         <th colspan="4"><?= Translator::t('interned_strings_usage') ?></th>
@@ -91,7 +92,7 @@ $this->title = $version;
                             <td>
                                 <?= $presenter->formatMemory($value, $key) ?>
                             </td>
-                        
+
                         <?php endforeach; ?>
                     </tr>
                 </table>

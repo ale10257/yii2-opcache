@@ -1,23 +1,22 @@
 {
-	"name": "insolita/yii2-opcache",
-	"description": "Yii2 OpCache module - Show statistic, config, reset all, invalidate files, search in cached files",
-	"type": "yii2-extension",
-	"keywords": ["yii2","extension","opcache"],
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "insolita",
-			"email": "webmaster100500@ya.ru"
-		}
-	],
-	"require": {
-		"php":">=5.6.0",
-		"yiisoft/yii2": "*",
-		"yiisoft/yii2-bootstrap": "^2.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"\\insolita\\opcache\\": "src/"
-		}
-	}
+  "name": "ale10257/opcache",
+  "description": "Package",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "opcache"
+  ],
+  "license": "MIT",
+  "require": {
+    "yiisoft/yii2": "~2.0.0",
+    "yiisoft/yii2-httpclient": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ale10257\\opcache\\": "src"
+    }
+  },
+  "extra": {
+    "bootstrap": "ale10257\\opcache\\Bootstrap"
+  }
 }

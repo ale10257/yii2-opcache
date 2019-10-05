@@ -1,51 +1,30 @@
 <?php
-/**
- * Created by solly [05.04.17 17:55]
- */
 
-namespace insolita\opcache\services;
+namespace ale10257\opcache\services;
 
-use insolita\opcache\contracts\IOpcacheFinder;
-use insolita\opcache\models\OpcacheStatus;
-use insolita\opcache\utils\OpcacheException;
-use insolita\opcache\utils\Helper;
+use ale10257\opcache\contracts\IOpcacheFinder;
+use ale10257\opcache\models\OpcacheStatus;
+use ale10257\opcache\utils\Helper;
 
 /**
  * Class OpcacheFinder
- *
  * @package insolita\opcache\services
  */
-class OpcacheFinder implements IOpcacheFinder
+class OpcacheFinder implements IOpcacheFinder, \JsonSerializable
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $directives = [];
-    
-    /**
-     * @var string
-     */
+    /** @var string */
     private $version = 'Unknown';
-    
-    /**
-     * @var array
-     */
+    /**  @var array */
     private $blackList = [];
-    
-    /**
-     * @var array
-     */
+    /** @var array */
     private $files = [];
-    
-    /**
-     * @var \insolita\opcache\models\OpcacheStatus
-     */
+    /** @var \ale10257\opcache\models\OpcacheStatus */
     private $status;
-    
+
     /**
      * OpcacheFinder constructor.
-     *
-     * @throws \insolita\opcache\utils\OpcacheException
      */
     public function __construct()
     {
@@ -55,56 +34,72 @@ class OpcacheFinder implements IOpcacheFinder
             $this->blackList = Helper::remove($config, 'blacklist', []);
             $this->version = Helper::getValue($config, 'version.opcache_product_name', '')
                 . Helper::getValue($config, 'version.version', 'Unknown');
-            $status = opcache_get_status(true);
-            $this->files = Helper::remove($status, 'scripts', []);
-            $this->status = new OpcacheStatus($status);
+            $this->status = new OpcacheStatus(opcache_get_status(true));
             unset($config, $status);
         } catch (\Throwable $e) {
-            throw new OpcacheException(
-                'Opcache functions not available;
-             Check if extension opcache installed; Check opcache.restriction_api option'
-            );
+            throw new \DomainException($e->getMessage());
         }
     }
-    
-    /**
-     * @return array
-     */
+
     public function getDirectives()
     {
         return $this->directives;
     }
-    
-    /**
-     * @return string
-     */
+
     public function getVersion()
     {
         return $this->version;
     }
-    
-    /**
-     * @return array
-     */
+
     public function getBlackList()
     {
-        return $this->blackList?$this->blackList:[];
+        return $this->blackList ? $this->blackList : [];
     }
-    
-    /**
-     * @return array
-     */
+
     public function getFiles()
     {
         return $this->files ? array_values($this->files) : [];
     }
-    
-    /**
-     * @return \insolita\opcache\models\OpcacheStatus
-     */
+
     public function getStatus()
     {
         return $this->status;
     }
-    
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'directives' => $this->directives,
+            'version' => $this->version,
+            'blackList' => $this->blackList,
+            'files' => $this->files,
+        ];
+    }
+
+
+    public function getFilesDataProvider(): array
+    {
+        $status = opcache_get_status(true);
+        $this->files = Helper::remove($status, 'scripts', []);
+        $searchModel = (new OpcachePresenter())->createFileFilterModel($this->files);
+        $provider = $searchModel->search(\Yii::$app->request->getQueryParams());
+        return compact('searchModel', 'provider');
+    }
+
+    public function invalidate($file = null)
+    {
+        return ['result' => opcache_invalidate($file, true)];
+    }
+
+    public function reset()
+    {
+        return ['result' => opcache_reset()];
+    }
 }

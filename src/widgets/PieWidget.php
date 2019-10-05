@@ -3,7 +3,7 @@
  * Created by solly [05.04.17 22:43]
  */
 
-namespace insolita\opcache\widgets;
+namespace ale10257\opcache\widgets;
 
 use yii\base\InvalidConfigException;
 use yii\bootstrap\Widget;
@@ -22,23 +22,23 @@ class PieWidget extends Widget
      * @var string
      */
     public $functionName;
-    
+
     /**
      * @var array
      */
     public $clientOptions = [];
-    
+
     /**
      * @var array $data ['label'=>'The label','value'=>'The value']
      **/
     public $data = [];
-    
+
     /**
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->data)||!$this->functionName) {
+        if (empty($this->data) || !$this->functionName) {
             throw new InvalidConfigException();
         }
         if (!isset($this->options['id'])) {
@@ -50,11 +50,11 @@ class PieWidget extends Widget
         parent::init();
         $this->registerHeadScript();
         $this->registerScript($this->options['id'],
-                              $this->functionName,
-                              Json::encode($this->clientOptions),
-                              $this->prepareData($this->data));
+            $this->functionName,
+            Json::encode($this->clientOptions),
+            $this->prepareData($this->data));
     }
-    
+
     /**
      * @return string
      */
@@ -62,7 +62,7 @@ class PieWidget extends Widget
     {
         return Html::tag('div', '', $this->options);
     }
-    
+
     /**
      *
      */
@@ -79,7 +79,7 @@ class PieWidget extends Widget
             'google_chart_package'
         );
     }
-    
+
     /**
      * @param $data
      *
@@ -95,7 +95,7 @@ class PieWidget extends Widget
         unset($data);
         return Json::encode($chartData);
     }
-    
+
     /**
      * @param $selector
      * @param $functionName
@@ -104,21 +104,16 @@ class PieWidget extends Widget
      */
     private function registerScript($selector, $functionName, $options, $data)
     {
-        $js
-            = <<<JS
-      google.charts.setOnLoadCallback({$functionName});
-
-      function {$functionName}() {
-
-        var {$functionName}_data = google.visualization.arrayToDataTable($data);
-
-        var options = $options;
-
-        var chart = new google.visualization.PieChart(document.getElementById("{$selector}"));
-
-        chart.draw({$functionName}_data, options);
-       }
-JS;
+        $js = "
+          google.charts.setOnLoadCallback($functionName);
+          function $functionName() {
+            var {$functionName}_data = google.visualization.arrayToDataTable($data);
+            var options = $options;
+            var chart = new google.visualization.PieChart(document.getElementById('$selector'));
+            chart.draw({$functionName}_data, options);
+           }";
         $this->getView()->registerJs($js, View::POS_HEAD);
     }
 }
+
+
