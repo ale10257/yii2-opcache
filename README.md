@@ -10,13 +10,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-composer require ale10257/opcache "dev-master"
+composer require ale10257/yii2-opcache "dev-master"
 ```
 
 or add
 
 ```
-ale10257/opcache "dev-master"
+ale10257/yii2-opcache "dev-master"
 ```
 
 to the require section of your `composer.json` file.
