@@ -53,6 +53,7 @@ class ApiController extends Controller implements IOpcacheController
             'total_count' => $provider_obj->getTotalCount(),
             'keys' => array_keys($provider_obj->getKeys()),
             'models' => $provider_obj->getModels(),
+            'pagination' => $provider_obj->getPagination()
         ];
         $data['provider'] = $provider;
         return $data;

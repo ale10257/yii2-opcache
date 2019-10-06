@@ -87,6 +87,7 @@ class OpcacheFinderApi implements IOpcacheFinder
         $provider->setModels($response->data['provider']['models']);
         $provider->setKeys($response->data['provider']['keys']);
         $provider->setTotalCount($response->data['provider']['total_count']);
+        $provider->setPagination($response->data['provider']['pagination']);
         return compact('searchModel', 'provider');
     }
 
