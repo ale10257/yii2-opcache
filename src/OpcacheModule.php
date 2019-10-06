@@ -39,7 +39,6 @@ class OpcacheModule extends Module
         if ($this->local && $host = Yii::$app->request->get('opcache_host')) {
             Yii::$app->params['opcache_host'] = $this->hosts[$host];
         }
-        Yii::$app->language = $this->language;
         $this->registerTranslations();
     }
 
