@@ -1,5 +1,5 @@
 {
-  "name": "ale10257/opcache",
+  "name": "ale10257/yii2-opcache",
   "description": "Package",
   "type": "yii2-extension",
   "keywords": [
@@ -9,8 +9,7 @@
   "license": "MIT",
   "require": {
     "yiisoft/yii2": "~2.0.0",
-    "yiisoft/yii2-httpclient": "*",
-    "vlucas/phpdotenv": "^3.3"
+    "yiisoft/yii2-httpclient": "*"
   },
   "autoload": {
     "psr-4": {
