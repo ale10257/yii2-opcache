@@ -12,8 +12,7 @@ use Yii;
  */
 class OpcacheModule extends Module
 {
-    /** @var string */
-    public $controllerNamespace = __NAMESPACE__ . '\controllers';
+    public $config_hosts_file;
     /** @var array
      * [
      *    'host_alias' => ['domain' => 'example.com', 'token' => 'token']
@@ -27,6 +26,12 @@ class OpcacheModule extends Module
     public function init()
     {
         parent::init();
+        if (!$this->config_hosts_file) {
+            $file = Yii::getAlias('@app/config/opcache_hosts.php');
+            if (is_file($file)) {
+                $this->hosts = require $file;
+            }
+        }
         if ($this->local && $host = Yii::$app->request->get('opcache_host')) {
             Yii::$app->params['opcache_host'] = $this->hosts[$host];
         }
