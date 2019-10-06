@@ -47,28 +47,21 @@ $this->registerJs($js, \yii\web\View::POS_END);
                             return $btn;
                         }
                     ],
-                    [
-                        'attribute' => 'full_path',
-                        'format' => 'raw',
-                        'label' => Translator::t('full_path'),
-                    ],
-                    [
-                        'attribute' => 'hits',
-                        'label' => Translator::t('hits'),
-                    ],
-                    [
-                        'attribute' => 'memory_consumption',
-                        'format' => 'size',
-                        'label' => Translator::t('memory_consumption'),
-                    ],
+                    'full_path:raw:' . Translator::t('full_path'),
+                    'hits:raw:' . Translator::t('hits'),
+                    'memory_consumption:shortSize:' . Translator::t('memory_consumption'),
                     [
                         'attribute' => 'timestamp',
-                        'format' => 'datetime',
+                        'value' => function ($model) {
+                            return Yii::$app->formatter->asDatetime($model['timestamp'], 'short');
+                        },
                         'label' => Translator::t('file_timestamp'),
                     ],
                     [
                         'attribute' => 'last_used_timestamp',
-                        'format' => 'datetime',
+                        'value' => function ($model) {
+                            return Yii::$app->formatter->asDatetime($model['last_used_timestamp'], 'short');
+                        },
                         'label' => Translator::t('last_used_timestamp'),
                     ],
 
