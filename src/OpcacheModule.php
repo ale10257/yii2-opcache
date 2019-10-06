@@ -12,16 +12,20 @@ use Yii;
  */
 class OpcacheModule extends Module
 {
+    /** @var string */
     public $config_hosts_file;
-    /** @var array
+    /** @var string */
+    public $language = 'en';
+    /** @var bool  */
+    public $local = true;
+
+    /** @var array example:
      * [
      *    'host_alias' => ['domain' => 'example.com', 'token' => 'token']
      *    'host_alias1' => ['domain' => 'example1.com', 'token' => 'token1']
      * ]
      */
     public $hosts = [];
-
-    public $local = true;
 
     public function init()
     {
@@ -35,6 +39,7 @@ class OpcacheModule extends Module
         if ($this->local && $host = Yii::$app->request->get('opcache_host')) {
             Yii::$app->params['opcache_host'] = $this->hosts[$host];
         }
+        Yii::$app->language = $this->language;
         $this->registerTranslations();
     }
 
