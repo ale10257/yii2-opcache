@@ -71,9 +71,14 @@ class OpcacheFinderApi implements IOpcacheFinder
 
     public function getFilesDataProvider()
     {
+        $get = Yii::$app->request->get();
+        if (!empty($get['opcache_host'])) {
+            unset($get['opcache_host']);
+        }
+        $query_string = $get ? http_build_query($get) : null;
         $url = $this->base_url . 'files';
-        if (Yii::$app->request->queryString) {
-            $url .= '?' . Yii::$app->request->queryString;
+        if ($query_string) {
+            $url .= '?' . $query_string;
         }
         $response = (clone $this->client)
             ->setUrl($url)
