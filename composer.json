@@ -15,8 +15,5 @@
     "psr-4": {
       "ale10257\\opcache\\": "src"
     }
-  },
-  "extra": {
-    "bootstrap": "ale10257\\opcache\\Bootstrap"
   }
 }
